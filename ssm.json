@@ -1,0 +1,186 @@
+{
+  "data" : [
+    {
+      "name" : "cases",
+      "require" : {
+        "path" : "data/data.csv",
+        "fields" : [ "date", "cases" ]
+      }
+    }
+  ],
+
+
+
+
+
+
+
+  "inputs" : [
+    {
+      "name" : "N",
+      "require" : {
+        "path" : "data/N.csv",
+        "fields" : [ "date", "N" ]
+      }
+    },
+    {
+      "name" : "births",
+      "require" : {
+        "path" : "data/births.csv",
+        "fields" : [ "date", "births" ]
+      }
+    },
+    {
+      "name" : "prop",
+      "require" : {
+        "path" : "data/prop.csv",
+        "fields" : [ "date", "prop" ]
+      }
+    },
+
+
+
+    {
+      "name" : "delta",
+      "require" : { "path" : "data/delta.json" }
+    },
+    {
+      "name" : "mu",
+      "require" : { "path" : "data/mu.json" }
+    },
+    {
+      "name" : "r0",
+      "require" : { "path" : "data/r0.json" }
+    },
+    {
+      "name" : "sigma",
+      "require" : { 
+        "path" : "data/durationofE.json", 
+        "name" : "durationofE"
+      },
+      "transformation" : "1/durationofE",
+      "to_resource" : "1/sigma"
+    },
+    {
+      "name" : "rep",
+      "require" : { "path" : "data/rep.json" }
+    },
+    {
+      "name" : "gamma",
+      "require" : { 
+        "path" : "data/durationofI.json",
+        "name" : "durationofI"
+      },
+      "transformation" : "1/durationofI",
+      "to_resource" : "1/gamma"
+    },
+    {
+      "name" : "sto",
+      "require" : { "path" : "data/sto.json" }
+    },
+
+
+
+    {
+      "name" : "M",
+      "require" : { "path" : "data/M.json" }
+    },
+    {
+      "name" : "S",
+      "require" : { "path" : "data/S.json" }
+    },
+    {
+      "name" : "E",
+      "require" : { "path" : "data/E.json" }
+    },
+    {
+      "name" : "I",
+      "require" : { "path" : "data/I.json" }
+    },
+    {
+      "name" : "R",
+      "require" : { "path" : "data/R.json" }
+    }
+
+  ],
+
+
+
+
+
+  "populations" : [
+    { "name" : "london", 
+      "composition" : ["M", "S", "E", "I", "R"],
+      "remainder" : {
+        "name" : "R",
+        "pop_size" : "N"
+      }
+    }
+  ],
+
+
+
+
+
+
+  "reactions" : [
+    {
+      "from" : "U",
+      "to" : "M",
+      "rate" : "births",
+      "description" : "births into maternal immunity class"
+    },
+    {
+      "from" : "M",
+      "to" : "S",
+      "rate" : "delta",
+      "description" : "transition from maternally immune to susceptible"
+    },
+    {
+      "from" : "S",
+      "to" : "E",
+      "rate" : "r0*gamma*I",
+      "description" : "infection",
+      "white_noise" : { "name" : "noise", "sd" : "sto" }
+    },
+    {
+      "from" : "E",
+      "to" : "I",
+      "rate" : "sigma",
+      "accumulators" : ["inc"],
+      "description" : "transition from exposed to symptomatic"
+    },
+    {
+      "from" : "I",
+      "to" : "R",
+      "rate" : "gamma",
+      "description" : "recovery"
+    },
+    { "from" : "M", "to" : "U", "rate" : "mu", "description" : "death" },
+    { "from" : "S", "to" : "U", "rate" : "mu", "description" : "death" },
+    { "from" : "E", "to" : "U", "rate" : "mu", "description" : "death" },
+    { "from" : "I", "to" : "U", "rate" : "mu", "description" : "death" },
+    { "from" : "R", "to" : "U", "rate" : "mu", "description" : "death" }
+  
+  ],
+
+
+
+
+
+
+  "observations" : [
+    {
+      "name" : "cases",
+      "start" : "1944-01-01",
+      "distribution" : "discretized_normal",
+      "mean" : "rep*prop*inc",
+      "sd" : "sqrt(rep*(1.0-rep)*prop*inc)"
+    }
+  ]
+
+
+}
+
+
+

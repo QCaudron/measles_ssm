@@ -1,0 +1,7 @@
+{
+	"name" : "uniform",
+	"distributionParameter" : [
+		{ "name" : "lower", "value" : 40, "unitCode" : "YEAR" },
+		{ "name" : "upper", "value" : 75, "unitCode" : "YEAR" }
+	]
+}

@@ -1,0 +1,7 @@
+{
+	"name" : "uniform",
+	"distributionParameter" : [
+		{ "name" : "lower", "value" : 60, "unitCode" : "DAY" },
+		{ "name" : "upper", "value" : 400, "unitCode" : "DAY" }
+	]
+}
