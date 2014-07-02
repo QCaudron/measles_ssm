@@ -96,10 +96,6 @@
     {
       "name" : "I",
       "require" : { "path" : "data/I.json" }
-    },
-    {
-      "name" : "R",
-      "require" : { "path" : "data/R.json" }
     }
 
   ],
