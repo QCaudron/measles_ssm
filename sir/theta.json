@@ -5,11 +5,9 @@
 		{
 			"name" : "values",
 			"data" : {
-				"durationofM" : 120.0,
-				"mu" : 60.0,
+				"life" : 21900.0,
 				"r0" : 18.0,
-				"durationofE" : 6.0,
-				"durationofI" : 6.0,
+				"durationofI" : 14.0,
 				"rep" : 0.5
 			}
 		},
@@ -20,10 +18,8 @@
 		{
 			"name" : "covariance",
 			"data" : {
-				"delta" : { "delta" : 0.02 },
-				"mu" : { "mu" : 0.02 },
+				"life" : { "life" : 0.02 },
 				"r0" : { "r0" : 0.02 },
-				"durationofE" : { "durationofE" : 0.02 },
 				"durationofI" : { "durationofI" : 0.02 },
 				"rep" : { "rep" : 0.02 }
 			}

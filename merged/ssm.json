@@ -40,31 +40,19 @@
 
 
 
-    {
-      "name" : "delta",
-      "require" : { 
-        "path" : "data/durationofM.json",
-        "name" : "durationofM" 
-      },
-      "transformation" : "1/durationofM",
-      "to_resource" : "1/delta"
-    },
+    
     {
       "name" : "mu",
-      "require" : { "path" : "data/mu.json" }
+      "require" : { 
+        "path" : "data/lifeexpectancy.json",
+        "name" : "life" 
+      },
+      "transformation" : "1/life",
+      "to_resource" : "1/mu"
     },
     {
       "name" : "r0",
       "require" : { "path" : "data/r0.json" }
-    },
-    {
-      "name" : "sigma",
-      "require" : { 
-        "path" : "data/durationofE.json", 
-        "name" : "durationofE"
-      },
-      "transformation" : "1/durationofE",
-      "to_resource" : "1/sigma"
     },
     {
       "name" : "rep",
@@ -86,18 +74,12 @@
 
 
 
-    {
-      "name" : "M",
-      "require" : { "path" : "data/M.json" }
-    },
+    
     {
       "name" : "S",
       "require" : { "path" : "data/S.json" }
     },
-    {
-      "name" : "E",
-      "require" : { "path" : "data/E.json" }
-    },
+    
     {
       "name" : "I",
       "require" : { "path" : "data/I.json" }
@@ -111,7 +93,7 @@
 
   "populations" : [
     { "name" : "london", 
-      "composition" : ["M", "S", "E", "I", "R"],
+      "composition" : ["S", "I", "R"],
       "remainder" : {
         "name" : "R",
         "pop_size" : "N"
@@ -127,29 +109,18 @@
   "reactions" : [
     {
       "from" : "U",
-      "to" : "M",
+      "to" : "S",
       "rate" : "births",
       "description" : "births into maternal immunity class"
     },
-    {
-      "from" : "M",
-      "to" : "S",
-      "rate" : "delta",
-      "description" : "transition from maternally immune to susceptible"
-    },
+   
     {
       "from" : "S",
-      "to" : "E",
-      "rate" : "r0*gamma*I/N",
-      "description" : "infection (1+sin(2*PI*t)/30.)*",
-      "white_noise" : { "name" : "noise", "sd" : "sto" }
-    },
-    {
-      "from" : "E",
       "to" : "I",
-      "rate" : "sigma",
+      "rate" : "(1. + sin(2.*PI*t/365.)/10.) * r0*gamma*I/N",
       "accumulators" : ["inc"],
-      "description" : "transition from exposed to symptomatic"
+      "description" : "infection",
+      "white_noise" : { "name" : "noise", "sd" : "sto" }
     },
     {
       "from" : "I",
@@ -157,9 +128,7 @@
       "rate" : "gamma",
       "description" : "recovery"
     },
-    { "from" : "M", "to" : "U", "rate" : "mu", "description" : "death" },
     { "from" : "S", "to" : "U", "rate" : "mu", "description" : "death" },
-    { "from" : "E", "to" : "U", "rate" : "mu", "description" : "death" },
     { "from" : "I", "to" : "U", "rate" : "mu", "description" : "death" },
     { "from" : "R", "to" : "U", "rate" : "mu", "description" : "death" }
   
