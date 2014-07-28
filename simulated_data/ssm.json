@@ -1,0 +1,164 @@
+{
+  "data" : [
+    {
+      "name" : "cases",
+      "require" : {
+        "path" : "data/data.csv",
+        "fields" : [ "date", "cases" ]
+      }
+    }
+  ],
+
+
+
+
+
+
+
+  "inputs" : [
+    {
+      "name" : "N",
+      "require" : {
+        "path" : "data/N.csv",
+        "fields" : [ "date", "N" ]
+      }
+    },
+    {
+      "name" : "births",
+      "require" : {
+        "path" : "data/births.csv",
+        "fields" : [ "date", "births" ]
+      }
+    },
+    {
+      "name" : "prop",
+      "require" : {
+        "path" : "data/prop.csv",
+        "fields" : [ "date", "prop" ]
+      }
+    },
+
+
+    {
+      "name" : "amp",
+      "require" : { "path" : "data/amplitude.json" }
+    },
+    {
+      "name" : "phase",
+      "require" : { "path" : "data/phase.json" }
+    },
+
+    
+    {
+      "name" : "mu",
+      "require" : { 
+        "path" : "data/lifeexpectancy.json",
+        "name" : "life" 
+      },
+      "transformation" : "1/life",
+      "to_resource" : "1/mu"
+    },
+    {
+      "name" : "r0",
+      "require" : { "path" : "data/r0.json" }
+    },
+    {
+      "name" : "rep",
+      "require" : { "path" : "data/rep.json" }
+    },
+    {
+      "name" : "gamma",
+      "require" : { 
+        "path" : "data/durationofI.json",
+        "name" : "durationofI"
+      },
+      "transformation" : "1/durationofI",
+      "to_resource" : "1/gamma"
+    },
+    {
+      "name" : "sto",
+      "require" : { "path" : "data/sto.json" }
+    },
+
+
+
+    
+    {
+      "name" : "S",
+      "require" : { "path" : "data/S.json" }
+    },
+    
+    {
+      "name" : "I",
+      "require" : { "path" : "data/I.json" }
+    }
+
+  ],
+
+
+
+
+
+  "populations" : [
+    { "name" : "london", 
+      "composition" : ["S", "I", "R"],
+      "remainder" : {
+        "name" : "R",
+        "pop_size" : "N"
+      }
+    }
+  ],
+
+
+
+
+
+
+  "reactions" : [
+    {
+      "from" : "U",
+      "to" : "S",
+      "rate" : "births",
+      "description" : "births into maternal immunity class"
+    },
+   
+    {
+      "from" : "S",
+      "to" : "I",
+      "rate" : "(1. + amp*sin(2.*PI*t/365.0 + phase)) * r0*gamma*I/N",
+      "accumulators" : ["inc"],
+      "description" : "infection",
+      "white_noise" : { "name" : "noise", "sd" : "sto" }
+    },
+    {
+      "from" : "I",
+      "to" : "R",
+      "rate" : "gamma",
+      "description" : "recovery"
+    },
+    { "from" : "S", "to" : "U", "rate" : "mu", "description" : "death" },
+    { "from" : "I", "to" : "U", "rate" : "mu", "description" : "death" },
+    { "from" : "R", "to" : "U", "rate" : "mu", "description" : "death" }
+  
+  ],
+
+
+
+
+
+
+  "observations" : [
+    {
+      "name" : "cases",
+      "start" : "1944-01-01",
+      "distribution" : "discretized_normal",
+      "mean" : "rep*prop*inc",
+      "sd" : "sqrt(rep*(1.0-rep)*prop*inc)"
+    }
+  ]
+
+
+}
+
+
+
